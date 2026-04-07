@@ -182,15 +182,20 @@ export class StorybookFormComponent implements OnInit, OnDestroy {
     }
 
     downloadGeneratedPdf(): void {
+      const url = this.generatedPdfUrl;
+      this.generatedPdfUrl = null; // prevent closeSuccessPopup from revoking it
       this.closeSuccessPopup();
-      if (!this.generatedPdfUrl) {
+      if (!url) {
         return;
       }
 
       const link = document.createElement('a');
-      link.href = this.generatedPdfUrl;
+      link.href = url;
       link.download = 'storybook.pdf';
+      document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
+      setTimeout(() => URL.revokeObjectURL(url), 100);
     }
 
     closeSuccessPopup(): void {
