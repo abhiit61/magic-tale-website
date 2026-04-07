@@ -162,7 +162,10 @@ export class StorybookFormComponent implements OnInit, OnDestroy {
           .subscribe({
             next: (pdfBlob: Blob) => {
               this.generationProgress = 100;
+              console.log('PDF generation completed');
+              console.log(pdfBlob);
               this.generatedPdfUrl = URL.createObjectURL(pdfBlob);
+              console.log(this.generatedPdfUrl);
               this.isPdfReady = true;
               this.showSuccessPopup = true;
 
