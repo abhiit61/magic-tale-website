@@ -21,6 +21,8 @@ export class StorybookFormComponent implements OnInit, OnDestroy {
     generatedPdfUrl: string | null = null;
     isPdfReady = false;
     showSuccessPopup = false;
+    showErrorDialog = false;
+    errorDialogMessage = '';
     generationProgress = 0;
     private progressTimer: ReturnType<typeof setInterval> | null = null;
     locations: string[] = [
@@ -171,8 +173,9 @@ export class StorybookFormComponent implements OnInit, OnDestroy {
 
               this.generateCaptcha();
             },
-            error: (error: HttpErrorResponse) => {
-              this.submitError = error.error?.message || 'Failed to generate storybook PDF. Please try again.';
+            error: (_error: HttpErrorResponse) => {
+              this.errorDialogMessage = 'Something went wrong while generating your storybook. Please try again after a few minutes.';
+              this.showErrorDialog = true;
             }
           });
       } else {
@@ -196,6 +199,11 @@ export class StorybookFormComponent implements OnInit, OnDestroy {
       link.click();
       document.body.removeChild(link);
       setTimeout(() => URL.revokeObjectURL(url), 100);
+    }
+
+    closeErrorDialog(): void {
+      this.showErrorDialog = false;
+      this.errorDialogMessage = '';
     }
 
     closeSuccessPopup(): void {

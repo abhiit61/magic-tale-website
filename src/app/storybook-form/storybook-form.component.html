@@ -151,7 +151,6 @@
       {{ isSubmitting ? 'Generating PDF...' : '✨ Generate Story ✨' }}
     </button>
 
-    <span class="error-message" *ngIf="submitError">{{ submitError }}</span>
   </form>
 
 </div>
@@ -162,6 +161,16 @@
     <p>Generating your storybook PDF... {{ generationProgress }}%</p>
     <div class="progress-track">
       <div class="progress-fill" [style.width.%]="generationProgress"></div>
+    </div>
+  </div>
+</div>
+
+<div class="success-popup-backdrop" *ngIf="showErrorDialog">
+  <div class="success-popup error-popup">
+    <h3>Generation Failed</h3>
+    <p>{{ errorDialogMessage }}</p>
+    <div class="success-popup-actions">
+      <button type="button" class="close-btn" (click)="closeErrorDialog()">Close</button>
     </div>
   </div>
 </div>

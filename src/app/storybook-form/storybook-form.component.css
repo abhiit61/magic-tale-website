@@ -370,6 +370,14 @@ body {
   color: #111 !important;
 }
 
+.error-popup h3 {
+  color: #a00 !important;
+}
+
+.error-popup p {
+  color: #5c0000 !important;
+}
+
 @keyframes slideIn {
   from {
     opacity: 0;
