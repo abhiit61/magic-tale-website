@@ -87,7 +87,7 @@ export class StorybookFormComponent implements OnInit, OnDestroy {
         others: this.formBuilder.group({
           character: ['', Validators.required],
           moral: ['', Validators.required],
-          notes: ['']
+          language: ['', Validators.required]
         }),
         captcha: ['', Validators.required]
       });
@@ -232,7 +232,7 @@ export class StorybookFormComponent implements OnInit, OnDestroy {
         others: {
           character: '',
           moral: '',
-          notes: ''
+          language: ''
         },
         captcha: ''
       });

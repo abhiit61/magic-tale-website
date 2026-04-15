@@ -125,8 +125,14 @@
           <span class="error-message" *ngIf="storyForm.get('others.moral')?.invalid && storyForm.get('others.moral')?.touched">Moral/Lesson is required</span>
         </div>
         <div class="form-group">
-          <label for="companionNotes">Additional Notes</label>
-          <textarea id="companionNotes" formControlName="notes" placeholder="Any additional details..." rows="3"></textarea>
+          <label for="language">Language</label>
+          <select id="language" formControlName="language">
+            <option value="">Select language</option>
+            <option value="english">English</option>
+            <option value="hindi">Hindi</option>
+            <option value="gujarati">Gujarati</option>
+          </select>
+          <span class="error-message" *ngIf="storyForm.get('others.language')?.invalid && storyForm.get('others.language')?.touched">Language is required</span>
         </div>
       </div>
     </div>
