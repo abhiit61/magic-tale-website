@@ -15,9 +15,13 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   return next(authReq).pipe(
     catchError((error: HttpErrorResponse) => {
-      if (error.status === 401 && !req.url.includes(API_ENDPOINTS_AUTH_PATH)) {
-        authService.logout();
-        router.navigate(['/login']);
+      const isAuthEndpoint = req.url.includes(API_ENDPOINTS_AUTH_PATH);
+      if (!isAuthEndpoint) {
+        // status 0 = CORS block caused by backend redirecting expired token to Google OAuth
+        if (error.status === 401 || (error.status === 0 && !!token)) {
+          authService.logout();
+          router.navigate(['/login']);
+        }
       }
       return throwError(() => error);
     })
