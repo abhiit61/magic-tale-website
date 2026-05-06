@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
 import { StorybookService } from './storybook.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-storybook-form',
@@ -51,7 +52,11 @@ export class StorybookFormComponent implements OnInit, OnDestroy {
     captchaCode: string = '';
     captchaError: string = '';
   
-    constructor(private formBuilder: FormBuilder, private storybookService: StorybookService) {}
+    constructor(private formBuilder: FormBuilder, private storybookService: StorybookService, private authService: AuthService) {}
+
+  logout(): void {
+    this.authService.logout();
+  }
   
     ngOnInit(): void {
       this.initializeForm();
