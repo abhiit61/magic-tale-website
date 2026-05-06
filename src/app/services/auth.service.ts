@@ -25,6 +25,30 @@ export class AuthService {
     return !!this.getToken();
   }
 
+  isAdmin(): boolean {
+    const payload = this.getTokenPayload();
+    if (!payload) return false;
+    const role = payload['role'] as string | undefined;
+    const roles = payload['roles'] as string[] | undefined;
+    const authorities = payload['authorities'] as string[] | undefined;
+    return (
+      role === 'ADMIN' || role === 'admin' ||
+      (Array.isArray(roles) && roles.some(r => r === 'ADMIN' || r === 'ROLE_ADMIN')) ||
+      (Array.isArray(authorities) && authorities.some(a => a === 'ROLE_ADMIN' || a === 'ADMIN'))
+    );
+  }
+
+  getTokenPayload(): Record<string, unknown> | null {
+    const token = this.getToken();
+    if (!token) return null;
+    try {
+      const base64Payload = token.split('.')[1];
+      return JSON.parse(atob(base64Payload));
+    } catch {
+      return null;
+    }
+  }
+
   logout(): void {
     localStorage.removeItem(this.TOKEN_KEY);
     this.router.navigate(['/login']);

@@ -8,5 +8,8 @@ export const API_ENDPOINTS = {
   },
   auth: {
     googleLogin: '/api/auth/google'
+  },
+  admin: {
+    users: '/api/admin/users'
   }
 } as const;

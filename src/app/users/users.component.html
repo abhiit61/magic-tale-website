@@ -1,0 +1,134 @@
+<div class="page-layout">
+  <app-sidebar />
+
+  <main class="main-content">
+    <div class="users-container">
+      <div class="users-header">
+        <h1>👥 User Management</h1>
+        <p>Manage registered users and their roles</p>
+      </div>
+
+      <!-- Loading -->
+      <div class="state-box" *ngIf="loading">
+        <div class="spinner"></div>
+        <span>Loading users...</span>
+      </div>
+
+      <!-- Error -->
+      <div class="state-box error-box" *ngIf="!loading && errorMessage">
+        <span>{{ errorMessage }}</span>
+        <button class="btn btn-secondary" (click)="loadUsers()">Retry</button>
+      </div>
+
+      <!-- Users table -->
+      <div class="table-card" *ngIf="!loading && !errorMessage">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>User</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let user of users">
+                <td>
+                  <div class="user-cell">
+                    <div class="avatar" [class.avatar--admin]="user.role === 'ADMIN'">
+                      <img *ngIf="user.pictureUrl" [src]="user.pictureUrl" [alt]="user.name" />
+                      <span *ngIf="!user.pictureUrl">{{ getInitials(user.name) }}</span>
+                    </div>
+                    <span class="user-name">{{ user.name }}</span>
+                  </div>
+                </td>
+                <td class="email-cell">{{ user.email }}</td>
+                <td>
+                  <span class="badge" [class.badge--admin]="user.role === 'ADMIN'" [class.badge--user]="user.role === 'USER'">
+                    {{ user.role }}
+                  </span>
+                </td>
+                <td>
+                  <span class="badge" [class.badge--active]="user.active" [class.badge--inactive]="!user.active">
+                    {{ user.active ? 'Active' : 'Inactive' }}
+                  </span>
+                </td>
+                <td>
+                  <div class="action-buttons">
+                    <button class="btn btn-view" (click)="openDetails(user)" title="View details">
+                      👁 View
+                    </button>
+                    <button
+                      class="btn btn-danger"
+                      [disabled]="!user.active || !!actionInProgress"
+                      (click)="deactivateUser(user)"
+                      title="Deactivate user"
+                    >
+                      <span *ngIf="isActing('deactivate-' + user.id)">...</span>
+                      <span *ngIf="!isActing('deactivate-' + user.id)">🚫 Deactivate</span>
+                    </button>
+                    <button
+                      class="btn btn-promote"
+                      [disabled]="user.role === 'ADMIN' || !!actionInProgress"
+                      (click)="promoteToAdmin(user)"
+                      title="Promote to admin"
+                    >
+                      <span *ngIf="isActing('promote-' + user.id)">...</span>
+                      <span *ngIf="!isActing('promote-' + user.id)">⬆ Make Admin</span>
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr *ngIf="users.length === 0">
+                <td colspan="5" class="empty-row">No users found.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- User Details Modal -->
+<div class="modal-backdrop" *ngIf="selectedUser" (click)="closeDetails()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <button class="modal-close" (click)="closeDetails()">✕</button>
+    <div class="modal-avatar" [class.modal-avatar--admin]="selectedUser.role === 'ADMIN'">
+      <img *ngIf="selectedUser.pictureUrl" [src]="selectedUser.pictureUrl" [alt]="selectedUser.name" />
+      <span *ngIf="!selectedUser.pictureUrl">{{ getInitials(selectedUser.name) }}</span>
+    </div>
+    <h2>{{ selectedUser.name }}</h2>
+    <p class="modal-email">{{ selectedUser.email }}</p>
+    <div class="modal-badges">
+      <span class="badge" [class.badge--admin]="selectedUser.role === 'ADMIN'" [class.badge--user]="selectedUser.role === 'USER'">
+        {{ selectedUser.role }}
+      </span>
+      <span class="badge" [class.badge--active]="selectedUser.active" [class.badge--inactive]="!selectedUser.active">
+        {{ selectedUser.active ? 'Active' : 'Inactive' }}
+      </span>
+    </div>
+    <div class="modal-meta">
+      <span class="meta-label">Joined</span>
+      <span>{{ selectedUser.createdAt | date:'mediumDate' }}</span>
+    </div>
+    <div class="modal-actions">
+      <button
+        class="btn btn-danger"
+        [disabled]="!selectedUser.active || !!actionInProgress"
+        (click)="deactivateUser(selectedUser)"
+      >
+        🚫 Deactivate
+      </button>
+      <button
+        class="btn btn-promote"
+        [disabled]="selectedUser.role === 'ADMIN' || !!actionInProgress"
+        (click)="promoteToAdmin(selectedUser)"
+      >
+        ⬆ Make Admin
+      </button>
+    </div>
+  </div>
+</div>

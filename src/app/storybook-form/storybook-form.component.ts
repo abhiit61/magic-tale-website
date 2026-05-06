@@ -5,12 +5,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { finalize } from 'rxjs/operators';
 import { StorybookService } from './storybook.service';
 import { AuthService } from '../services/auth.service';
+import { SidebarComponent } from '../components/sidebar/sidebar.component';
 
 @Component({
   selector: 'app-storybook-form',
   standalone: true,
-  imports: [ReactiveFormsModule,
-    CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, SidebarComponent],
   templateUrl: './storybook-form.component.html',
   styleUrl: './storybook-form.component.css'
 })
