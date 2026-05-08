@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UsersService } from '../services/users.service';
+import { AuthService } from '../services/auth.service';
 import { User } from '../models/user.model';
 import { SidebarComponent } from '../components/sidebar/sidebar.component';
 
@@ -18,7 +19,18 @@ export class UsersComponent implements OnInit {
   selectedUser: User | null = null;
   actionInProgress: string | null = null;
 
-  constructor(private readonly usersService: UsersService) {}
+  private readonly currentUserEmail: string | null;
+
+  constructor(
+    private readonly usersService: UsersService,
+    authService: AuthService
+  ) {
+    this.currentUserEmail = authService.getCurrentUserEmail();
+  }
+
+  isSelf(user: User): boolean {
+    return !!this.currentUserEmail && this.currentUserEmail === user.email;
+  }
 
   ngOnInit(): void {
     this.loadUsers();

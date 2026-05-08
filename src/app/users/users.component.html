@@ -41,7 +41,10 @@
                       <img *ngIf="user.pictureUrl" [src]="user.pictureUrl" [alt]="user.name" />
                       <span *ngIf="!user.pictureUrl">{{ getInitials(user.name) }}</span>
                     </div>
-                    <span class="user-name">{{ user.name }}</span>
+                    <div class="user-name-wrap">
+                      <span class="user-name">{{ user.name }}</span>
+                      <span class="self-tag" *ngIf="isSelf(user)">You</span>
+                    </div>
                   </div>
                 </td>
                 <td class="email-cell">{{ user.email }}</td>
@@ -62,18 +65,18 @@
                     </button>
                     <button
                       class="btn btn-danger"
-                      [disabled]="!user.active || !!actionInProgress"
+                      [disabled]="!user.active || !!actionInProgress || isSelf(user)"
                       (click)="deactivateUser(user)"
-                      title="Deactivate user"
+                      [title]="isSelf(user) ? 'You cannot deactivate your own account' : 'Deactivate user'"
                     >
                       <span *ngIf="isActing('deactivate-' + user.id)">...</span>
                       <span *ngIf="!isActing('deactivate-' + user.id)">🚫 Deactivate</span>
                     </button>
                     <button
                       class="btn btn-promote"
-                      [disabled]="user.role === 'ADMIN' || !!actionInProgress"
+                      [disabled]="user.role === 'ADMIN' || !!actionInProgress || isSelf(user)"
                       (click)="promoteToAdmin(user)"
-                      title="Promote to admin"
+                      [title]="isSelf(user) ? 'You cannot change your own role' : 'Promote to admin'"
                     >
                       <span *ngIf="isActing('promote-' + user.id)">...</span>
                       <span *ngIf="!isActing('promote-' + user.id)">⬆ Make Admin</span>
@@ -100,7 +103,10 @@
       <img *ngIf="selectedUser.pictureUrl" [src]="selectedUser.pictureUrl" [alt]="selectedUser.name" />
       <span *ngIf="!selectedUser.pictureUrl">{{ getInitials(selectedUser.name) }}</span>
     </div>
-    <h2>{{ selectedUser.name }}</h2>
+    <div class="modal-name-row">
+      <h2>{{ selectedUser.name }}</h2>
+      <span class="self-tag" *ngIf="isSelf(selectedUser)">You</span>
+    </div>
     <p class="modal-email">{{ selectedUser.email }}</p>
     <div class="modal-badges">
       <span class="badge" [class.badge--admin]="selectedUser.role === 'ADMIN'" [class.badge--user]="selectedUser.role === 'USER'">
@@ -114,17 +120,22 @@
       <span class="meta-label">Joined</span>
       <span>{{ selectedUser.createdAt | date:'mediumDate' }}</span>
     </div>
+    <div class="self-warning" *ngIf="isSelf(selectedUser)">
+      ⚠️ You cannot modify your own account.
+    </div>
     <div class="modal-actions">
       <button
         class="btn btn-danger"
-        [disabled]="!selectedUser.active || !!actionInProgress"
+        [disabled]="!selectedUser.active || !!actionInProgress || isSelf(selectedUser)"
+        [title]="isSelf(selectedUser) ? 'You cannot deactivate your own account' : 'Deactivate user'"
         (click)="deactivateUser(selectedUser)"
       >
         🚫 Deactivate
       </button>
       <button
         class="btn btn-promote"
-        [disabled]="selectedUser.role === 'ADMIN' || !!actionInProgress"
+        [disabled]="selectedUser.role === 'ADMIN' || !!actionInProgress || isSelf(selectedUser)"
+        [title]="isSelf(selectedUser) ? 'You cannot change your own role' : 'Promote to admin'"
         (click)="promoteToAdmin(selectedUser)"
       >
         ⬆ Make Admin

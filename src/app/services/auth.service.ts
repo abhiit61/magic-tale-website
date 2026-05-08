@@ -38,6 +38,12 @@ export class AuthService {
     );
   }
 
+  getCurrentUserEmail(): string | null {
+    const payload = this.getTokenPayload();
+    if (!payload) return null;
+    return (payload['email'] ?? payload['sub']) as string | null;
+  }
+
   getTokenPayload(): Record<string, unknown> | null {
     const token = this.getToken();
     if (!token) return null;
