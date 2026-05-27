@@ -159,7 +159,7 @@
 
         <!-- Submit Button -->
         <button type="submit" class="submit-btn" [disabled]="isSubmitting">
-          {{ isSubmitting ? 'Generating PDF...' : '✨ Generate Story ✨' }}
+          {{ isSubmitting ? 'Submitting...' : '✨ Generate Story ✨' }}
         </button>
 
       </form>
@@ -171,10 +171,7 @@
 <div class="loader-overlay" *ngIf="isSubmitting">
   <div class="loader-content">
     <div class="loader-spinner"></div>
-    <p>Generating your storybook PDF... {{ generationProgress }}%</p>
-    <div class="progress-track">
-      <div class="progress-fill" [style.width.%]="generationProgress"></div>
-    </div>
+    <p>Submitting your story...</p>
   </div>
 </div>
 
@@ -190,11 +187,12 @@
 
 <div class="success-popup-backdrop" *ngIf="showSuccessPopup">
   <div class="success-popup">
-    <h3>PDF Storybook Generated</h3>
-    <p>Your storybook PDF is ready.</p>
+    <div class="success-icon">🎉</div>
+    <h3>Story Submitted!</h3>
+    <p>Your story is being generated in the background. Go to <strong>My Stories</strong> to track progress and download it once ready.</p>
     <div class="success-popup-actions">
-      <button type="button" class="submit-btn" (click)="downloadGeneratedPdf()">⬇️ Download PDF</button>
-      <button type="button" class="close-btn" (click)="closeSuccessPopup()">Close</button>
+      <button type="button" class="submit-btn" (click)="goToMyStories()">📚 View My Stories</button>
+      <button type="button" class="close-btn" (click)="closeSuccessPopup()">Create Another</button>
     </div>
   </div>
 </div>

@@ -4,7 +4,8 @@ export const API_BASE_URL = environment.apiBaseUrl;
 
 export const API_ENDPOINTS = {
   storybook: {
-    generatePdf: '/api/storybook/generate'
+    generatePdf: '/api/storybook/generate',
+    stories: '/api/storybook/stories'
   },
   auth: {
     googleLogin: '/api/auth/google'

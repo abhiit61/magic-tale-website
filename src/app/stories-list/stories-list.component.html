@@ -1,0 +1,272 @@
+<div class="page-layout">
+  <app-sidebar />
+
+  <main class="main-content">
+    <div class="stories-container">
+
+      <div class="stories-header">
+        <div class="header-title-row">
+          <h1>{{ isAdmin ? '📚 All Stories' : '📚 My Stories' }}</h1>
+          <span class="total-badge" *ngIf="!loading && !errorMessage">
+            {{ totalElements }} {{ totalElements === 1 ? 'story' : 'stories' }}
+          </span>
+        </div>
+        <p>{{ isAdmin ? 'All personalised storybooks generated on the platform' : 'Your personalised storybooks' }}</p>
+      </div>
+
+      <!-- Success banner -->
+      <div class="alert-banner alert-banner--success" *ngIf="regenSuccess">
+        <span>{{ regenSuccess }}</span>
+        <button class="alert-dismiss" (click)="regenSuccess = null">✕</button>
+      </div>
+
+      <!-- Error banner -->
+      <div class="alert-banner" *ngIf="regenError">
+        <span>{{ regenError }}</span>
+        <button class="alert-dismiss" (click)="regenError = null">✕</button>
+      </div>
+
+      <!-- Loading -->
+      <div class="state-box" *ngIf="loading">
+        <div class="spinner"></div>
+        <span>Loading stories...</span>
+      </div>
+
+      <!-- Error -->
+      <div class="state-box error-box" *ngIf="!loading && errorMessage">
+        <span>{{ errorMessage }}</span>
+        <button class="btn btn-secondary" (click)="loadStories()">Retry</button>
+      </div>
+
+      <!-- Empty state -->
+      <div class="state-box empty-state" *ngIf="!loading && !errorMessage && stories.length === 0">
+        <span class="empty-icon">📖</span>
+        <div>
+          <p class="empty-title">No stories yet</p>
+          <p class="empty-sub">Generate your first personalised storybook to see it here.</p>
+        </div>
+        <button class="btn btn-create" routerLink="/storybook-form">Create Story</button>
+      </div>
+
+      <!-- Table -->
+      <div class="table-card" *ngIf="!loading && !errorMessage && stories.length > 0">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Story</th>
+                <th>Details</th>
+                <th>Status</th>
+                <th>Created</th>
+                <th *ngIf="isAdmin">Created By</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let story of stories" (click)="openDetails(story)" class="story-row">
+                <td>
+                  <div class="story-cell">
+                    <span class="story-icon">📖</span>
+                    <div class="story-info">
+                      <span class="story-name">{{ story.name }}</span>
+                      <span class="story-theme-chip">{{ story.theme }}</span>
+                    </div>
+                  </div>
+                </td>
+                <td class="details-cell">
+                  <span class="detail-pill">{{ story.location }}</span>
+                  <span class="detail-pill">{{ story.mood }}</span>
+                  <span class="detail-pill lang">{{ story.language }}</span>
+                </td>
+                <td>
+                  <span class="status-badge"
+                    [class.status--completed]="story.status === 'COMPLETED'"
+                    [class.status--processing]="story.status === 'PROCESSING'"
+                    [class.status--failed]="story.status === 'FAILED'">
+                    <span class="status-dot"></span>
+                    {{ story.status === 'PROCESSING' ? 'In Progress' : story.status === 'COMPLETED' ? 'Completed' : 'Failed' }}
+                  </span>
+                </td>
+                <td class="date-cell">{{ story.createdAt | date:'dd MMM yyyy' }}</td>
+                <td *ngIf="isAdmin" class="created-by-cell">
+                  <span class="created-by-name" [title]="story.createdByEmail ?? ''">
+                    {{ story.createdByName ?? story.createdByEmail ?? '—' }}
+                  </span>
+                </td>
+                <td>
+                  <div class="action-buttons" (click)="$event.stopPropagation()">
+                    <button
+                      class="icon-btn icon-btn--download"
+                      [disabled]="story.status !== 'COMPLETED' || !!actionInProgress"
+                      (click)="downloadStory(story, $event)"
+                      title="Download PDF"
+                    >
+                      <span *ngIf="isActing('download-' + story.id)" class="btn-spinner"></span>
+                      <span *ngIf="!isActing('download-' + story.id)">⬇</span>
+                    </button>
+                    <button
+                      class="icon-btn icon-btn--regen"
+                      [disabled]="!!actionInProgress"
+                      (click)="regenerateSame(story, $event)"
+                      title="Regenerate with same parameters"
+                    >
+                      <span *ngIf="isActing('regen-' + story.id)" class="btn-spinner"></span>
+                      <span *ngIf="!isActing('regen-' + story.id)">↺</span>
+                    </button>
+                    <button
+                      class="icon-btn icon-btn--edit"
+                      [disabled]="!!actionInProgress"
+                      (click)="editAndRegenerate(story, $event)"
+                      title="Edit parameters & generate new story"
+                    >✏</button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-bar" *ngIf="totalPages > 1">
+          <div class="pagination-info">
+            Page {{ currentPage + 1 }} of {{ totalPages }}
+          </div>
+          <div class="pagination-controls">
+            <button
+              class="page-btn page-btn--nav"
+              [disabled]="currentPage === 0"
+              (click)="goToPage(currentPage - 1)"
+              title="Previous page"
+            >‹</button>
+
+            <ng-container *ngFor="let p of pageRange">
+              <span *ngIf="!isNumber(p)" class="page-ellipsis">…</span>
+              <button
+                *ngIf="isNumber(p)"
+                class="page-btn"
+                [class.page-btn--active]="p === currentPage"
+                (click)="goToPage(p)"
+              >{{ p + 1 }}</button>
+            </ng-container>
+
+            <button
+              class="page-btn page-btn--nav"
+              [disabled]="currentPage === totalPages - 1"
+              (click)="goToPage(currentPage + 1)"
+              title="Next page"
+            >›</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Story Details Modal -->
+<div class="modal-backdrop" *ngIf="selectedStory" (click)="closeDetails()">
+  <div class="modal" (click)="$event.stopPropagation()">
+    <button class="modal-close" (click)="closeDetails()">✕</button>
+
+    <div class="modal-header">
+      <span class="modal-story-icon">📖</span>
+      <div>
+        <h2>{{ selectedStory.name }}'s Story</h2>
+        <span class="status-badge modal-status"
+          [class.status--completed]="selectedStory.status === 'COMPLETED'"
+          [class.status--processing]="selectedStory.status === 'PROCESSING'"
+          [class.status--failed]="selectedStory.status === 'FAILED'">
+          <span class="status-dot"></span>
+          {{ selectedStory.status === 'PROCESSING' ? 'In Progress' : selectedStory.status === 'COMPLETED' ? 'Completed' : 'Failed' }}
+        </span>
+      </div>
+    </div>
+
+    <div class="modal-grid">
+      <div class="modal-field">
+        <span class="field-label">Hero Name</span>
+        <span class="field-value">{{ selectedStory.name }}</span>
+      </div>
+      <div class="modal-field">
+        <span class="field-label">Gender</span>
+        <span class="field-value">{{ selectedStory.gender }}</span>
+      </div>
+      <div class="modal-field">
+        <span class="field-label">Age</span>
+        <span class="field-value">{{ selectedStory.age }}</span>
+      </div>
+      <div class="modal-field" *ngIf="selectedStory.bodyTone">
+        <span class="field-label">Body Tone</span>
+        <span class="field-value">{{ selectedStory.bodyTone }}</span>
+      </div>
+      <div class="modal-field">
+        <span class="field-label">Theme</span>
+        <span class="field-value">{{ selectedStory.theme }}</span>
+      </div>
+      <div class="modal-field">
+        <span class="field-label">Location</span>
+        <span class="field-value">{{ selectedStory.location }}</span>
+      </div>
+      <div class="modal-field">
+        <span class="field-label">Event</span>
+        <span class="field-value">{{ selectedStory.event }}</span>
+      </div>
+      <div class="modal-field">
+        <span class="field-label">Mood</span>
+        <span class="field-value">{{ selectedStory.mood }}</span>
+      </div>
+      <div class="modal-field">
+        <span class="field-label">Character</span>
+        <span class="field-value">{{ selectedStory.character }}</span>
+      </div>
+      <div class="modal-field">
+        <span class="field-label">Moral</span>
+        <span class="field-value">{{ selectedStory.moral }}</span>
+      </div>
+      <div class="modal-field">
+        <span class="field-label">Language</span>
+        <span class="field-value">{{ selectedStory.language }}</span>
+      </div>
+      <div class="modal-field" *ngIf="selectedStory.notes">
+        <span class="field-label">Notes</span>
+        <span class="field-value">{{ selectedStory.notes }}</span>
+      </div>
+    </div>
+
+    <div class="modal-meta-row">
+      <span class="field-label">Created</span>
+      <span>{{ selectedStory.createdAt | date:'dd MMM yyyy, HH:mm' }}</span>
+      <ng-container *ngIf="isAdmin && selectedStory.createdByName">
+        <span class="field-label" style="margin-left:16px">By</span>
+        <span>{{ selectedStory.createdByName }}</span>
+        <span class="created-by-email" *ngIf="selectedStory.createdByEmail"> ({{ selectedStory.createdByEmail }})</span>
+      </ng-container>
+    </div>
+
+    <div class="modal-actions">
+      <button
+        class="btn btn-download"
+        [disabled]="selectedStory.status !== 'COMPLETED' || !!actionInProgress"
+        (click)="downloadStory(selectedStory, $event)"
+      >
+        <span *ngIf="isActing('download-' + selectedStory.id)" class="btn-spinner"></span>
+        <span *ngIf="!isActing('download-' + selectedStory.id)">⬇ Download PDF</span>
+      </button>
+      <button
+        class="btn btn-regen"
+        [disabled]="!!actionInProgress"
+        (click)="regenerateSame(selectedStory, $event)"
+      >
+        <span *ngIf="isActing('regen-' + selectedStory.id)" class="btn-spinner"></span>
+        <span *ngIf="!isActing('regen-' + selectedStory.id)">↺ Regenerate Same</span>
+      </button>
+      <button
+        class="btn btn-edit"
+        [disabled]="!!actionInProgress"
+        (click)="editAndRegenerate(selectedStory, $event)"
+      >
+        ✏ Edit & Generate
+      </button>
+    </div>
+  </div>
+</div>
