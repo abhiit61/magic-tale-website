@@ -25,27 +25,6 @@ export class StorybookFormComponent implements OnInit {
   showErrorDialog = false;
   errorDialogMessage = '';
 
-  locations: string[] = [
-    'Ancient Egypt',
-    'Cyberpunk City',
-    'Enchanted Forest',
-    'Underwater Kingdom',
-    'Mountain Realm',
-    'Steampunk Metropolis',
-    'Desert Oasis',
-    'Sky Islands'
-  ];
-
-  events: string[] = [
-    'Lost Treasure',
-    'Royal Coronation',
-    'Mysterious Disappearance',
-    'Epic Battle',
-    'Festival of Lights',
-    'Time Travel Accident',
-    'Secret Mission',
-    'Unexpected Reunion'
-  ];
   filteredLocations: string[] = [];
   filteredEvents: string[] = [];
   captchaCode: string = '';
@@ -58,6 +37,17 @@ export class StorybookFormComponent implements OnInit {
     private router: Router
   ) {}
 
+  autoFill(): void {
+    const p = this.storybookService.getAutoFillPayload();
+    this.storyForm.patchValue({
+      hero:   { name: p.name, gender: p.gender, age: p.age, bodyTone: p.bodyTone },
+      world:  { location: p.location, theme: p.theme, event: p.event, mood: p.mood },
+      others: { character: p.companion, moral: p.moralAttributes, language: p.language },
+      captcha: this.captchaCode
+    });
+    this.captchaError = '';
+  }
+
   logout(): void {
     this.authService.logout();
   }
@@ -65,8 +55,8 @@ export class StorybookFormComponent implements OnInit {
   ngOnInit(): void {
     this.initializeForm();
     this.setupFilters();
-    this.filteredEvents = this.events;
-    this.filteredLocations = this.locations;
+    this.filteredEvents = this.storybookService.events;
+    this.filteredLocations = this.storybookService.locations;
     this.generateCaptcha();
     this.storyForm.get('captcha')?.valueChanges.subscribe(() => {
       this.checkCaptcha();
@@ -111,8 +101,8 @@ export class StorybookFormComponent implements OnInit {
           mood: prefill.mood
         },
         others: {
-          character: prefill.character,
-          moral: prefill.moral,
+          character: prefill.companion,
+          moral: prefill.moralAttributes,
           language: prefill.language
         }
       });
@@ -139,12 +129,12 @@ export class StorybookFormComponent implements OnInit {
 
   setupFilters(): void {
     this.storyForm.get('world.location')?.valueChanges.subscribe(value => {
-      this.filteredLocations = this.locations.filter(loc =>
+      this.filteredLocations = this.storybookService.locations.filter((loc: string) =>
         loc.toLowerCase().includes((value || '').toLowerCase())
       );
     });
     this.storyForm.get('world.event')?.valueChanges.subscribe(value => {
-      this.filteredEvents = this.events.filter(ev =>
+      this.filteredEvents = this.storybookService.events.filter((ev: string) =>
         ev.toLowerCase().includes((value || '').toLowerCase())
       );
     });
@@ -169,8 +159,15 @@ export class StorybookFormComponent implements OnInit {
     }
 
     const formValue = this.storyForm.value;
-    const payload = { ...formValue.hero, ...formValue.world, ...formValue.others };
+    const payload = {
+      ...formValue.hero,
+      ...formValue.world,
+      language:        formValue.others.language,
+      companion:       formValue.others.character,
+      moralAttributes: formValue.others.moral
+    };
 
+    console.log(payload);
     this.isSubmitting = true;
     this.storyForm.disable({ emitEvent: false });
 
@@ -213,8 +210,8 @@ export class StorybookFormComponent implements OnInit {
     this.storyForm.markAsPristine();
     this.storyForm.markAsUntouched();
     this.generateCaptcha();
-    this.filteredLocations = this.locations;
-    this.filteredEvents = this.events;
+    this.filteredLocations = this.storybookService.locations;
+    this.filteredEvents = this.storybookService.events;
     setTimeout(() => window.scrollTo({ top: 0, left: 0, behavior: 'auto' }), 0);
   }
 }

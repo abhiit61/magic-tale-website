@@ -13,8 +13,8 @@ export interface StorybookPayload {
   theme: string;
   event: string;
   mood: string;
-  character: string;
-  moral: string;
+  companion: string;
+  moralAttributes: string;
   language: string;
   notes?: string;
 }
@@ -26,6 +26,37 @@ export class StorybookService {
   private readonly generatePdfApiUrl: string;
   private readonly storiesApiUrl: string;
 
+  readonly locations: string[] = [
+    'Mystical Varanasi Ghats',
+    'Enchanted Rajasthan Desert',
+    'Magical Kerala Backwaters',
+    'Sacred Vrindavan Forests',
+    'Ancient Hampi Ruins',
+    'Himalayan Snow Kingdom',
+    'Royal Mysore Palace',
+    'Sundarbans Jungle'
+  ];
+
+  readonly events: string[] = [
+    'Diwali Celebration',
+    'Holi Festival of Colours',
+    'Lost Temple Discovery',
+    'Royal Navratri Dance',
+    'Kumbh Mela Adventure',
+    'Village Mela Mystery',
+    'Ancient Treasure Hunt',
+    'Magical Train Journey'
+  ];
+
+  private readonly sampleNames    = ['Aarav', 'Diya', 'Ishaan', 'Kavya', 'Vivaan', 'Ananya', 'Arjun', 'Meera', 'Dev', 'Riya', 'Kabir', 'Siya'];
+  private readonly sampleThemes   = ['fantasy', 'scifi', 'adventure', 'mystery', 'romance'];
+  private readonly sampleMoods    = ['exciting', 'mysterious', 'peaceful', 'tense', 'playful'];
+  private readonly sampleChars    = ['dragon', 'robot', 'fairy', 'dog', 'cat', 'friend'];
+  private readonly sampleMorals   = ['courage', 'kindness', 'friendship', 'perseverance', 'honesty', 'teamwork'];
+  private readonly sampleGenders  = ['male', 'female'];
+  private readonly sampleTones    = ['Athletic', 'Slim', 'Average', 'Muscular', 'Curvy'];
+  private readonly sampleLangs    = ['hindi', 'hindi', 'gujarati', 'gujarati', 'english'];
+
   constructor(private readonly http: HttpClient) {
     this.generatePdfApiUrl = this.buildApiUrl(API_ENDPOINTS.storybook.generatePdf);
     this.storiesApiUrl = this.buildApiUrl(API_ENDPOINTS.storybook.stories);
@@ -35,6 +66,26 @@ export class StorybookService {
     const baseUrl = API_BASE_URL.replace(/\/$/, '');
     const endpointPath = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
     return `${baseUrl}${endpointPath}`;
+  }
+
+  private pick<T>(arr: T[]): T {
+    return arr[Math.floor(Math.random() * arr.length)];
+  }
+
+  getAutoFillPayload(): StorybookPayload {
+    return {
+      name:      this.pick(this.sampleNames),
+      gender:    this.pick(this.sampleGenders),
+      age:       Math.floor(Math.random() * 10) + 5,
+      bodyTone:  this.pick(this.sampleTones),
+      location:  this.pick(this.locations),
+      theme:     this.pick(this.sampleThemes),
+      event:     this.pick(this.events),
+      mood:      this.pick(this.sampleMoods),
+      companion:       this.pick(this.sampleChars),
+      moralAttributes: this.pick(this.sampleMorals),
+      language:  this.pick(this.sampleLangs)
+    };
   }
 
   submitStory(payload: StorybookPayload): Observable<{ id: string; status: string }> {

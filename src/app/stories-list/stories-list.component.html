@@ -54,7 +54,7 @@
           <table>
             <thead>
               <tr>
-                <th>Story</th>
+                <th>Story Title</th>
                 <th>Details</th>
                 <th>Status</th>
                 <th>Created</th>
@@ -68,7 +68,7 @@
                   <div class="story-cell">
                     <span class="story-icon">📖</span>
                     <div class="story-info">
-                      <span class="story-name">{{ story.name }}</span>
+                      <span class="story-name">{{ story.title }}</span>
                       <span class="story-theme-chip">{{ story.theme }}</span>
                     </div>
                   </div>
@@ -81,10 +81,10 @@
                 <td>
                   <span class="status-badge"
                     [class.status--completed]="story.status === 'COMPLETED'"
-                    [class.status--processing]="story.status === 'PROCESSING'"
+                    [class.status--processing]="story.status === 'GENERATING'"
                     [class.status--failed]="story.status === 'FAILED'">
                     <span class="status-dot"></span>
-                    {{ story.status === 'PROCESSING' ? 'In Progress' : story.status === 'COMPLETED' ? 'Completed' : 'Failed' }}
+                    {{ story.status === 'GENERATING' ? 'In Progress' : story.status === 'COMPLETED' ? 'Completed' : 'Failed' }}
                   </span>
                 </td>
                 <td class="date-cell">{{ story.createdAt | date:'dd MMM yyyy' }}</td>
@@ -174,10 +174,10 @@
         <h2>{{ selectedStory.name }}'s Story</h2>
         <span class="status-badge modal-status"
           [class.status--completed]="selectedStory.status === 'COMPLETED'"
-          [class.status--processing]="selectedStory.status === 'PROCESSING'"
+          [class.status--processing]="selectedStory.status === 'GENERATING'"
           [class.status--failed]="selectedStory.status === 'FAILED'">
           <span class="status-dot"></span>
-          {{ selectedStory.status === 'PROCESSING' ? 'In Progress' : selectedStory.status === 'COMPLETED' ? 'Completed' : 'Failed' }}
+          {{ selectedStory.status === 'GENERATING' ? 'In Progress' : selectedStory.status === 'COMPLETED' ? 'Completed' : 'Failed' }}
         </span>
       </div>
     </div>
@@ -216,12 +216,12 @@
         <span class="field-value">{{ selectedStory.mood }}</span>
       </div>
       <div class="modal-field">
-        <span class="field-label">Character</span>
-        <span class="field-value">{{ selectedStory.character }}</span>
+        <span class="field-label">Companion</span>
+        <span class="field-value">{{ selectedStory.companion }}</span>
       </div>
       <div class="modal-field">
         <span class="field-label">Moral</span>
-        <span class="field-value">{{ selectedStory.moral }}</span>
+        <span class="field-value">{{ selectedStory.moralAttributes }}</span>
       </div>
       <div class="modal-field">
         <span class="field-label">Language</span>

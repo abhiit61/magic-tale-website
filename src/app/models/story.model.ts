@@ -1,5 +1,6 @@
 export interface Story {
   id: string;
+  title: string;
   name: string;
   gender: string;
   age: number;
@@ -8,11 +9,11 @@ export interface Story {
   theme: string;
   event: string;
   mood: string;
-  character: string;
-  moral: string;
+  companion: string;
+  moralAttributes: string;
   language: string;
   notes?: string;
-  status: 'COMPLETED' | 'PROCESSING' | 'FAILED';
+  status: 'COMPLETED' | 'GENERATING' | 'FAILED';
   createdAt: string;
   createdByEmail?: string;
   createdByName?: string;

@@ -7,6 +7,13 @@
       <div class="header">
         <h1>✨ Personalised Storybook Creator</h1>
         <p>Craft your unique adventure</p>
+        <button
+          type="button"
+          class="autofill-btn"
+          (click)="autoFill()"
+          [disabled]="isSubmitting"
+          title="Auto-fill form with random sample data"
+        >🎲 Quick Fill</button>
       </div>
 
       <form [formGroup]="storyForm" class="story-form" [class.story-form--submitting]="isSubmitting" (ngSubmit)="onSubmit()">

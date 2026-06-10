@@ -43,12 +43,42 @@ body {
 }
 
 .header {
+  position: relative;
   text-align: center;
   color: #fff;
   margin-bottom: 48px;
   padding: 36px 0 24px 0;
   border-radius: 24px 24px 0 0;
   box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+}
+
+.autofill-btn {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  background: rgba(255,255,255,0.15);
+  border: 1.5px solid rgba(255,255,255,0.35);
+  color: #e0ffcf;
+  font-size: 0.88em;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 10px;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  backdrop-filter: blur(4px);
+  transition: background 0.18s, border-color 0.18s, transform 0.12s;
+  white-space: nowrap;
+}
+
+.autofill-btn:hover:not(:disabled) {
+  background: rgba(255,255,255,0.26);
+  border-color: rgba(255,255,255,0.6);
+  transform: translateY(-1px);
+}
+
+.autofill-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .header h1 {

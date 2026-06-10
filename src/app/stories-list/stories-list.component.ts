@@ -46,6 +46,7 @@ export class StoriesListComponent implements OnInit {
     this.errorMessage = '';
     this.storybookService.getStories(this.currentPage, this.pageSize).subscribe({
       next: (page: StoriesPage) => {
+        console.log(page.content)
         this.stories = page.content;
         this.totalPages = page.totalPages;
         this.totalElements = page.totalElements;
@@ -83,6 +84,7 @@ export class StoriesListComponent implements OnInit {
 
   openDetails(story: Story): void {
     this.selectedStory = story;
+    console.log('Selected Story:', story);
   }
 
   closeDetails(): void {
@@ -119,8 +121,8 @@ export class StoriesListComponent implements OnInit {
       theme: story.theme,
       event: story.event,
       mood: story.mood,
-      character: story.character,
-      moral: story.moral,
+      companion: story.companion,
+      moralAttributes: story.moralAttributes,
       language: story.language,
       notes: story.notes
     };
