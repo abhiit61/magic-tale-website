@@ -22,6 +22,53 @@ Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.
 
 Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
 
+## Docker
+
+Build the production image:
+
+```bash
+npm run docker:build
+```
+
+Run the container locally:
+
+```bash
+npm run docker:run
+```
+
+Open `http://localhost:8080` in your browser.
+
+If you prefer Docker directly:
+
+```bash
+docker build -t personalised-storybook .
+docker run --rm -p 8080:80 personalised-storybook
+```
+
+## Deployment
+
+1. Build the image locally.
+2. Tag the image for your registry, for example:
+
+```bash
+docker tag personalised-storybook YOUR_REGISTRY/your-repo/personalised-storybook:latest
+```
+
+3. Push to your registry:
+
+```bash
+docker push YOUR_REGISTRY/your-repo/personalised-storybook:latest
+```
+
+4. Deploy the image to a container service such as:
+   - Docker Hub + cloud host
+   - AWS Elastic Container Service / Fargate
+   - Azure Container Instances
+   - Google Cloud Run
+   - any Kubernetes cluster
+
+5. Point your service to listen on port `80` and serve the container.
+
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
