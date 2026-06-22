@@ -1,4 +1,4 @@
-# PersonalisedStorybook
+# Magic Tale Website
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.21.
 
@@ -41,8 +41,8 @@ Open `http://localhost:8080` in your browser.
 If you prefer Docker directly:
 
 ```bash
-docker build -t personalised-storybook .
-docker run --rm -p 8080:80 personalised-storybook
+docker build -t magic-tale-website .
+docker run --rm -p 8080:80 magic-tale-website
 ```
 
 ## Deployment
@@ -51,13 +51,13 @@ docker run --rm -p 8080:80 personalised-storybook
 2. Tag the image for your registry, for example:
 
 ```bash
-docker tag personalised-storybook YOUR_REGISTRY/your-repo/personalised-storybook:latest
+docker tag magic-tale-website YOUR_REGISTRY/your-repo/magic-tale-website:latest
 ```
 
 3. Push to your registry:
 
 ```bash
-docker push YOUR_REGISTRY/your-repo/personalised-storybook:latest
+docker push YOUR_REGISTRY/your-repo/magic-tale-website:latest
 ```
 
 4. Deploy the image to a container service such as:

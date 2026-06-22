@@ -1,5 +1,5 @@
 {
-  "name": "personalised-storybook",
+  "name": "magic-tale-website",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
@@ -7,8 +7,8 @@
     "build": "ng build",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
-    "docker:build": "docker build -t personalised-storybook .",
-    "docker:run": "docker run --rm -p 8080:80 personalised-storybook"
+    "docker:build": "docker build -t magic-tale-website .",
+    "docker:run": "docker run --rm -p 8080:80 magic-tale-website"
   },
   "private": true,
   "dependencies": {

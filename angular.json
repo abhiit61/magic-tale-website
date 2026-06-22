@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "personalised-storybook": {
+    "magic-tale-website": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/personalised-storybook",
+            "outputPath": "dist/magic-tale-website",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -68,10 +68,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "personalised-storybook:build:production"
+              "buildTarget": "magic-tale-website:build:production"
             },
             "development": {
-              "buildTarget": "personalised-storybook:build:development"
+              "buildTarget": "magic-tale-website:build:development"
             }
           },
           "defaultConfiguration": "development"
