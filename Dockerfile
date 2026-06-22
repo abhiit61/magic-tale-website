@@ -10,7 +10,8 @@ RUN npm run build -- --configuration production
 
 FROM nginx:stable-alpine AS production
 
-COPY --from=build /app/dist/magic-tale-website /usr/share/nginx/html
+COPY --from=build /app/dist/magic-tale-website/browser /usr/share/nginx/html
+COPY --from=build /app/dist/magic-tale-website/browser/index.html /usr/share/nginx/html/index.html
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
