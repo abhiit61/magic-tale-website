@@ -5,9 +5,13 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:dev": "ng build --configuration development",
+    "build:prod": "ng build --configuration production",
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "docker:build": "docker build -t magic-tale-website .",
+    "docker:build:dev": "docker build --build-arg CONFIG=development -t magic-tale-website:dev .",
+    "docker:build:prod": "docker build --build-arg CONFIG=production -t magic-tale-website:prod .",
     "docker:run": "docker run --rm -p 8080:80 magic-tale-website"
   },
   "private": true,

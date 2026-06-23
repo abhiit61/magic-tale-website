@@ -6,7 +6,8 @@ COPY package.json package-lock.json* ./
 RUN npm install
 
 COPY . .
-RUN npm run build -- --configuration production
+ARG CONFIG=production
+RUN npm run build -- --configuration $CONFIG
 
 FROM nginx:stable-alpine AS production
 
