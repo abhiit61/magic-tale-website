@@ -1,0 +1,87 @@
+<div class="page-layout">
+  <app-sidebar />
+
+  <main class="main-content">
+    <div class="settings-container">
+      <div class="settings-header">
+        <div class="header-title-row">
+          <span class="page-icon">⚙️</span>
+          <div>
+            <h1>System Status</h1>
+            <p>Status of all system components</p>
+          </div>
+        </div>
+      </div>
+
+      <section class="settings-section">
+        <div class="section-header">
+          <div>
+            <h2>Chat AI Model status</h2>
+            <p>Monitor which chat AI models are currently available and ready to generate stories.</p>
+          </div>
+          <span class="section-icon">🧠</span>
+        </div>
+
+      <div *ngIf="loading" class="state-box">
+        <div class="spinner"></div>
+        <span>Loading model availability...</span>
+      </div>
+
+      <div *ngIf="error" class="state-box state-error">
+        <span>{{ error }}</span>
+      </div>
+
+      <div *ngIf="chatModelsAvailability && !loading && !error" class="status-grid">
+        <article class="status-card" *ngFor="let model of chatModelsAvailability | keyvalue">
+          <div class="card-top">
+            <span class="model-icon" [ngClass]="getModelIconClass(model.key)">{{ getModelIcon(model.key) }}</span>
+            <div>
+              <span class="model-name">{{ model.key }}</span>
+              <span class="model-type">Chat AI model</span>
+            </div>
+          </div>
+          <div class="card-status" [ngClass]="model.value.toLowerCase()">
+            <span class="status-dot"></span>
+            {{ model.value }}
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="settings-section">
+      <div class="section-header">
+        <div>
+          <h2>Image AI Models</h2>
+          <p>Monitor which image generation models are currently available for artwork and illustration.</p>
+        </div>
+        <span class="section-icon">🖼️</span>
+      </div>
+
+      <div *ngIf="loading1" class="state-box">
+        <div class="spinner"></div>
+        <span>Loading model availability...</span>
+      </div>
+
+      <div *ngIf="error1" class="state-box state-error">
+        <span>{{ error1 }}</span>
+      </div>
+
+      <div *ngIf="imageModelsAvailability && !loading1 && !error1" class="status-grid">
+        <article class="status-card" *ngFor="let model of imageModelsAvailability | keyvalue">
+          <div class="card-top">
+            <span class="model-icon" [ngClass]="getModelIconClass(model.key)">{{ getModelIcon(model.key) }}</span>
+            <div>
+              <span class="model-name">{{ model.key }}</span>
+              <span class="model-type">Image model</span>
+            </div>
+          </div>
+          <div class="card-status" [ngClass]="model.value.toLowerCase()">
+            <span class="status-dot"></span>
+            {{ model.value }}
+          </div>
+        </article>
+      </div>
+    </section>
+  </div>
+</main>
+</div>

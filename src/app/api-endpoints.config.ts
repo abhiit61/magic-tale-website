@@ -12,5 +12,9 @@ export const API_ENDPOINTS = {
   },
   admin: {
     users: '/api/admin/users'
+  },
+  models: {
+    chatAvailability: '/api/models/chat/availability',
+    imageAvailability: '/api/models/image/availability'
   }
 } as const;
